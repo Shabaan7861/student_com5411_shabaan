@@ -67,5 +67,24 @@ Configuration StudentBaseline {
             DependsOn       = '[File]TestFolder'
         }
 
+         # Disable Guest Account
+        User DisableGuest {
+            UserName = "Guest"
+            Ensure   = "Present"
+            Disabled = $true
+        }
+
+        # Remove Telnet Client
+        WindowsFeature TelnetDisabled {
+            Name   = "Telnet-Client"
+            Ensure = "Absent"
+        }
+
+        # Ensure Windows Defender exists
+        WindowsFeature Defender {
+            Name   = "Windows-Defender"
+            Ensure = "Present"
+       }
+
     }
 }

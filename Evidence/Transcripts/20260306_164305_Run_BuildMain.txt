@@ -1,0 +1,42 @@
+**********************
+PowerShell transcript start
+Start time: 20260306164305
+Username: WIN11-CLIENT\vboxuser
+RunAs User: WIN11-CLIENT\vboxuser
+Configuration Name: 
+Machine: WIN11-CLIENT (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -NoProfile -ExecutionPolicy Bypass -Command Import-Module 'c:\Users\vboxuser\.vscode\extensions\ms-vscode.powershell-2025.4.0\modules\PowerShellEditorServices\PowerShellEditorServices.psd1'; Start-EditorServices -HostName 'Visual Studio Code Host' -HostProfileId 'Microsoft.VSCode' -HostVersion '2025.4.0' -BundledModulesPath 'c:\Users\vboxuser\.vscode\extensions\ms-vscode.powershell-2025.4.0\modules' -EnableConsoleRepl -StartupBanner "PowerShell Extension v2025.4.0
+Copyright (c) Microsoft Corporation.
+
+https://aka.ms/vscode-powershell
+Type 'help' to get help.
+" -LogLevel 'Warning' -LogPath 'c:\Users\vboxuser\AppData\Roaming\Code\logs\20260306T162015\window1\exthost\ms-vscode.powershell' -SessionDetailsPath 'c:\Users\vboxuser\AppData\Roaming\Code\User\globalStorage\ms-vscode.powershell\sessions\PSES-VSCode-8536-925006.json' -FeatureFlags @() 
+Process ID: 6636
+PSVersion: 7.5.4
+PSEdition: Core
+GitCommitId: 7.5.4
+OS: Microsoft Windows 10.0.26200
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+[+] Transcript started: Evidence\\Transcripts\\20260306_164305_Run_BuildMain.txt
+[+] Admin privileges confirmed.
+
+[Phase 1] Prerequisites...
+[*] Invoke-BarmBuzz-OneShots: LCM then Network
+[*] LCM already configured (flag present).
+--- BarmBuzz Network, PSRemoting & RSAT Prep ---
+[*] Checking Network Connection Profiles (all connected NICs)...
+    'Network' already Private.
+
+[*] Configuring Windows Remote Management (WinRM)...
+WARNING: PowerShell remoting has been enabled only for PowerShell 6+ configurations and does not affect Windows PowerShell remoting configurations. Run this cmdlet in Windows PowerShell to affect all PowerShell remoting configurations.
+WinRM is already set up to receive requests on this computer.
+WinRM is already set up for remote management on this computer.
+
+[*] Verifying Connectivity...
+    [+] WinRM is responding! (Protocol Version: OS: 0.0.0 SP: 0.0 Stack: 3.0)
+    [+] Ready for Orchestration.

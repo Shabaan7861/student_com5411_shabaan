@@ -226,4 +226,38 @@ catch {
 finally {
     try { Stop-Transcript | Out-Null } catch { }
     if ($Pause) { Read-Host -Prompt "Press Enter to exit" | Out-Null }
+    Write-Host "[*] Compilation complete." -ForegroundColor Green
+    Write-Host ""
+Write-Host "[Phase 3] Apply DSC configuration..." -ForegroundColor Yellow
+
+$MofPath = Join-Path $OutputsRoot $ConfigName
+
+Write-Host "[*] Applying DSC configuration from $MofPath" -ForegroundColor Gray
+
+Start-DscConfiguration `
+    -Path $MofPath `
+    -Wait `
+    -Verbose `
+    -Force
+
+Write-Host "[+] DSC configuration applied successfully." -ForegroundColor Green
+
+
+Write-Host ""
+Write-Host "[Phase 4] Collecting evidence..." -ForegroundColor Yellow
+
+ipconfig /all > "$EvidenceRoot\Network\ipconfig.txt"
+arp -a > "$EvidenceRoot\Network\arp.txt"
+route print > "$EvidenceRoot\Network\routes.txt"
+
+dcdiag > "$EvidenceRoot\HealthChecks\dcdiag.txt"
+gpresult /r > "$EvidenceRoot\HealthChecks\gpresult.txt"
+
+Write-Host "[+] Evidence collected." -ForegroundColor Green
+
+
+Write-Host ""
+Write-Host "=========================================" -ForegroundColor Cyan
+Write-Host "COM5411 Build Completed Successfully" -ForegroundColor Cyan
+Write-Host "=========================================" -ForegroundColor Cyan
 }
