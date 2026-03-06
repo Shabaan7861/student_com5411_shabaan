@@ -1,0 +1,9 @@
+
+Directory Server Diagnosis
+
+Performing initial setup:
+   Trying to find home server...
+   ***Error: WIN11-Client is not a Directory Server.  Must specify
+   /s:<Directory Server> or  /n:<Naming Context> or nothing to use the local
+   machine. 
+   ERROR: Could not find home server.

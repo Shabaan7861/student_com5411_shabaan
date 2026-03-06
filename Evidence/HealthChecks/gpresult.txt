@@ -1,0 +1,84 @@
+
+Microsoft (R) Windows (R) Operating System Group Policy Result tool v2.0
+c Microsoft Corporation. All rights reserved.
+
+Created on ?3/?6/?2026 at 3:18:52 PM
+
+
+RSOP data for WIN11-CLIENT\vboxuser on WIN11-CLIENT : Logging Mode
+-------------------------------------------------------------------
+
+OS Configuration:            Standalone Workstation
+OS Version:                  10.0.26200
+Site Name:                   N/A
+Roaming Profile:             N/A
+Local Profile:               C:\Users\vboxuser
+Connected over a slow link?: No
+
+
+COMPUTER SETTINGS
+------------------
+    
+    Last time Group Policy was applied: 3/6/2026 at 3:02:43 PM
+    Group Policy was applied from:      N/A
+    Group Policy slow link threshold:   500 kbps
+    Domain Name:                        ALI
+    Domain Type:                        WindowsNT 4
+
+    Applied Group Policy Objects
+    -----------------------------
+        N/A
+
+    The following GPOs were not applied because they were filtered out
+    -------------------------------------------------------------------
+        Local Group Policy
+            Filtering:  Not Applied (Empty)
+
+    The computer is a part of the following security groups
+    -------------------------------------------------------
+        System Mandatory Level
+        Everyone
+        BUILTIN\Users
+        NT AUTHORITY\SERVICE
+        CONSOLE LOGON
+        NT AUTHORITY\Authenticated Users
+        This Organization
+        gpsvc
+        LOCAL
+        BUILTIN\Administrators
+        
+
+USER SETTINGS
+--------------
+    
+    Last time Group Policy was applied: 3/6/2026 at 3:02:44 PM
+    Group Policy was applied from:      N/A
+    Group Policy slow link threshold:   500 kbps
+    Domain Name:                        ALI
+    Domain Type:                        WindowsNT 4
+    
+    Applied Group Policy Objects
+    -----------------------------
+        N/A
+
+    The following GPOs were not applied because they were filtered out
+    -------------------------------------------------------------------
+        Local Group Policy
+            Filtering:  Not Applied (Empty)
+
+    The user is a part of the following security groups
+    ---------------------------------------------------
+        None
+        Everyone
+        Local account and member of Administrators group
+        BUILTIN\Administrators
+        BUILTIN\Users
+        NT AUTHORITY\INTERACTIVE
+        CONSOLE LOGON
+        NT AUTHORITY\Authenticated Users
+        This Organization
+        Local account
+        LOCAL
+        NTLM Authentication
+        High Mandatory Level
+        

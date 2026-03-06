@@ -42,3 +42,7 @@ WinRM firewall exception enabled.
 Configured LocalAccountTokenFilterPolicy to grant administrative rights remotely to local users.
 
 [*] Verifying Connectivity...
+    [+] WinRM is responding! (Protocol Version: OS: 0.0.0 SP: 0.0 Stack: 3.0)
+    [+] Ready for Orchestration.
+
+[*] Ensuring RSAT tools (AD + GPO) are installed...
