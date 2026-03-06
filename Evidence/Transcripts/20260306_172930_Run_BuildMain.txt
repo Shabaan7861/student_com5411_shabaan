@@ -1,6 +1,6 @@
 **********************
 PowerShell transcript start
-Start time: 20260306164305
+Start time: 20260306172930
 Username: WIN11-CLIENT\vboxuser
 RunAs User: WIN11-CLIENT\vboxuser
 Configuration Name: 
@@ -10,8 +10,8 @@ Copyright (c) Microsoft Corporation.
 
 https://aka.ms/vscode-powershell
 Type 'help' to get help.
-" -LogLevel 'Warning' -LogPath 'c:\Users\vboxuser\AppData\Roaming\Code\logs\20260306T162015\window1\exthost\ms-vscode.powershell' -SessionDetailsPath 'c:\Users\vboxuser\AppData\Roaming\Code\User\globalStorage\ms-vscode.powershell\sessions\PSES-VSCode-8536-925006.json' -FeatureFlags @() 
-Process ID: 6636
+" -LogLevel 'Warning' -LogPath 'c:\Users\vboxuser\AppData\Roaming\Code\logs\20260306T171414\window1\exthost\ms-vscode.powershell' -SessionDetailsPath 'c:\Users\vboxuser\AppData\Roaming\Code\User\globalStorage\ms-vscode.powershell\sessions\PSES-VSCode-9480-305739.json' -FeatureFlags @() 
+Process ID: 10220
 PSVersion: 7.5.4
 PSEdition: Core
 GitCommitId: 7.5.4
@@ -22,7 +22,7 @@ PSRemotingProtocolVersion: 2.3
 SerializationVersion: 1.1.0.1
 WSManStackVersion: 3.0
 **********************
-[+] Transcript started: Evidence\\Transcripts\\20260306_164305_Run_BuildMain.txt
+[+] Transcript started: Evidence\\Transcripts\\20260306_172930_Run_BuildMain.txt
 [+] Admin privileges confirmed.
 
 [Phase 1] Prerequisites...
@@ -36,9 +36,15 @@ WSManStackVersion: 3.0
 WARNING: PowerShell remoting has been enabled only for PowerShell 6+ configurations and does not affect Windows PowerShell remoting configurations. Run this cmdlet in Windows PowerShell to affect all PowerShell remoting configurations.
 WinRM is already set up to receive requests on this computer.
 WinRM is already set up for remote management on this computer.
-
-[*] Verifying Connectivity...
-    [+] WinRM is responding! (Protocol Version: OS: 0.0.0 SP: 0.0 Stack: 3.0)
-    [+] Ready for Orchestration.
-
-[*] Ensuring RSAT tools (AD + GPO) are installed...
+PS>TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+PowerShell transcript end
+End time: 20260306172933
+**********************
