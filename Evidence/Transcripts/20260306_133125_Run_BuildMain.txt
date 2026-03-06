@@ -1,0 +1,44 @@
+**********************
+PowerShell transcript start
+Start time: 20260306133125
+Username: WIN11-CLIENT\vboxuser
+RunAs User: WIN11-CLIENT\vboxuser
+Configuration Name: 
+Machine: WIN11-CLIENT (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -noexit -command try { . "c:\Users\vboxuser\AppData\Local\Programs\Microsoft VS Code\b6a47e94e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" } catch {}
+Process ID: 2892
+PSVersion: 7.5.4
+PSEdition: Core
+GitCommitId: 7.5.4
+OS: Microsoft Windows 10.0.26200
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+[+] Transcript started: Evidence\\Transcripts\\20260306_133125_Run_BuildMain.txt
+[+] Admin privileges confirmed.
+
+[Phase 1] Prerequisites...
+[*] Invoke-BarmBuzz-OneShots: LCM then Network
+--- [STAFF-ONLY] Configuring Persistent LCM Settings ---
+WARNING: Module PSDesiredStateConfiguration is loaded in Windows PowerShell using WinPSCompatSession remoting session; please note that all input and output of commands from this module will be deserialized objects. If you want to load this module into PowerShell please use 'Import-Module -SkipEditionCheck' syntax.
+Configuration: Cannot process argument transformation on parameter 'ResourceModuleTuplesToImport'. Cannot convert the "System.Collections.ArrayList" value of type "System.Collections.ArrayList" to type "System.Tuple`3[System.String[],Microsoft.PowerShell.Commands.ModuleSpecification[],System.Version]".
+Configuration: Cannot process argument transformation on parameter 'ResourceModuleTuplesToImport'. Cannot convert the "System.Collections.ArrayList" value of type "System.Collections.ArrayList" to type "System.Tuple`3[System.String[],Microsoft.PowerShell.Commands.ModuleSpecification[],System.Version]".
+[*] Applying persistent automation settings...
+Set-DscLocalConfigurationManager: The computer name was not specified and the configuration directory does not have any configuration files.
+Set-DscLocalConfigurationManager: The computer name was not specified and the configuration directory does not have any configuration files.
+[+] LCM configured. Server is now reboot-ready.
+[*] Ensuring DSC modules are installed/pinned (PSResourceGet) ...
+    -> PSDesiredStateConfiguration@2.0.7
+    -> Pester@5.7.1
+    -> GroupPolicyDsc@1.0.3
+    -> ActiveDirectoryDsc@6.6.0
+[+] DSC module baseline ensured at C:\\Program Files\\WindowsPowerShell\\Modules.
+PS>scripts\Helpers\
+PS>TerminatingError(): "The module 'scripts' could not be loaded. For more information, run 'Import-Module scripts'."
+PS>cd .\Scripts\Helpers
+PS>invoke-Barnbuss-oneshot.ps1
+>> TerminatingError(): "The term 'invoke-Barnbuss-oneshot.ps1' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again."
