@@ -1,58 +1,30 @@
-<#
-CYBERSECURITY WARNING: NO CREDENTIALS IN THIS FILE
-
-This data file is committed to Git. NEVER put passwords, API keys, or secrets here.
-
-ACCEPTABLE DATA (safe to commit):
-- Domain names, server names, IP addresses
-- Feature lists, role configurations
-- Non-sensitive metadata (OU names, group names)
-- Certificate thumbprints (public info, not the private key!)
-
-NEVER COMMIT:
-- Passwords (plaintext or "obfuscated")
-- Connection strings with embedded credentials
-- API keys, tokens, or access secrets
-- Private keys or PFX files with passwords
-
-WHY THIS MATTERS (Security Mindset):
-1. Git History is Permanent: Even if you delete a secret later, it's in the commit history forever
-2. Public Repos: Students often make repos public for portfolios - instant breach
-3. Credential Scanners: GitHub, GitLab, and Bitbucket scan for secrets automatically
-4. Professional Consequences: Companies fire employees for committing secrets (real incidents)
-
-Real-world example (2021): Uber engineer committed AWS keys to GitHub.
-Cost: $100k AWS bill before discovered, engineer terminated, company fined.
-
-WHAT TO DO INSTEAD:
-- Orchestrator (Run_BuildMain.ps1) handles credential creation securely
-- Credentials passed at runtime, never stored in files
-- Production: Use Azure KeyVault, AWS Secrets Manager, HashiCorp Vault
-- DSC supports certificate encryption for MOF files (we'll cover this later)
-
-IF YOU NEED CREDENTIALS FOR TESTING:
-- See Documentation\README.md for the fixed lab passwords
-- Use them MANUALLY in PowerShell sessions ONLY
-- NEVER put them in code or data files
-
-This is not just a rule - this is professional survival.
-#>
-
 @{
     AllNodes = @(
         @{
-            NodeName   = 'localhost'
-            Role       = 'DC'
-            DomainName = 'bolton.barmbuzz.test'
-            
-            # SECURITY NOTE: Future credential properties will be added by the orchestrator
-            # at runtime, not stored here. Example (YOU DON'T ADD THIS YET):
-            # DomainCredential = $PSCredentialObject  # Injected by Run_BuildMain.ps1
-            
-            # CERTIFICATE ENCRYPTION (Production pattern - informational for now):
-            # CertificateFile = 'C:\Certs\DscPublicKey.cer'  # Public key for MOF encryption
-            # Thumbprint = '1234567890ABCDEF...'            # Certificate thumbprint
-            # PsDscAllowPlainTextPassword = $false           # Force encryption (production)
+            NodeName                    = 'localhost'
+            PSDscAllowPlainTextPassword = $true
+            PSDscAllowDomainUser        = $true
+
+            DomainName       = 'barmbuzz.corp'
+            DomainNetbios    = 'BARMBUZZ'
+            SafeModePassword = 'superw1n_user'
+
+            OUs = @(
+                @{ Name = 'Bolton';     Path = 'DC=barmbuzz,DC=corp' }
+                @{ Name = 'Derby';      Path = 'DC=barmbuzz,DC=corp' }
+                @{ Name = 'Nottingham'; Path = 'OU=Derby,DC=barmbuzz,DC=corp' }
+            )
+
+            Users = @(
+                @{ Name = 'Asia.Muhammed'; GivenName = 'Asia';  Surname = 'Muhammed'; OU = 'OU=Bolton,DC=barmbuzz,DC=corp' }
+                @{ Name = 'Aria.Hussian';  GivenName = 'Aria';  Surname = 'Hussian';  OU = 'OU=Derby,DC=barmbuzz,DC=corp' }
+                @{ Name = 'Amira.Perez';   GivenName = 'Amira'; Surname = 'Perez';    OU = 'OU=Nottingham,OU=Derby,DC=barmbuzz,DC=corp' }
+            )
+
+            Groups = @(
+                @{ Name = 'Bolton-Users'; OU = 'OU=Bolton,DC=barmbuzz,DC=corp'; Members = @('Asia.Muhammed') }
+                @{ Name = 'Derby-Users';  OU = 'OU=Derby,DC=barmbuzz,DC=corp';  Members = @('Aria.Hussian','Amira.Perez') }
+            )
         }
     )
 }

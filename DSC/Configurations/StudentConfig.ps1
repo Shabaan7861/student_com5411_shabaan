@@ -1,90 +1,246 @@
-<#
-STUDENT TASK:
-- Define Configuration StudentBaseline
-- Use ConfigurationData (AllNodes.psd1)
-- DO NOT hardcode passwords here.
+#Requires -Modules PSDesiredStateConfiguration
 
-CYBERSECURITY NOTES:
-This is a Security module. Credential handling matters even in labs.
-
-WHY NO HARDCODED CREDENTIALS?
-1. Security Hygiene: Hardcoded credentials in code = security breach waiting to happen
-2. Git History: Once committed, credentials are in your Git history FOREVER (even if you delete them later)
-3. Professional Practice: Real environments use credential vaults (Azure KeyVault, HashiCorp Vault, etc.)
-4. Audit Trail: Your Git commits may be reviewed by employers, peers, or examiners
-
-HOW CREDENTIALS WILL WORK (Later weeks):
-- The orchestrator (Run_BuildMain.ps1) will handle credential creation securely
-- Your configuration receives them as PSCredential objects via parameters
-- Example: Configuration StudentBaseline { param([PSCredential]$DomainCredential) }
-- You reference them in DSC resources without seeing the plaintext password
-- MOFs can be encrypted with certificates (production best practice)
-
-FOR NOW (Week 1):
-- Lab uses FIXED credentials documented in StudentRepoInit.ps1
-- Administrator password: superw1n_user (Windows local admin)
-- User accounts password: notlob2k26 (domain users you create)
-- You may need these for MANUAL tasks, but NEVER put them in this file
-
-THREAT MODEL AWARENESS:
-Even in a lab, practice defense-in-depth:
-- Assume your repo will be cloned by others (it will - it's Git!)
-- Assume your transcripts/logs will be read (they're in Evidence/)
-- Assume your build artifacts will be inspected (they're committed)
-- NEVER commit: passwords, API keys, personal data, PII
-
-If you accidentally commit a secret:
-1. Rotating the secret is the ONLY fix (changing the password)
-2. Deleting the file or "fixing" the commit does NOT remove it from Git history
-3. Tools like git-secrets, TruffleHog, and GitGuardian scan for exposed secrets
-
-This is not paranoia - this is professional discipline.
-#>
+# barmbuzz build - com5411 referral
+# shabaan
 
 Configuration StudentBaseline {
-    param()
+
+    param (
+        [Parameter(Mandatory)]
+        [System.Collections.Hashtable]$ConfigurationData
+    )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    Import-DscResource -ModuleName ComputerManagementDSC
-    #Import-DscResource -ModuleName ActivedirectoryDSC
+    Import-DscResource -ModuleName ActiveDirectoryDsc
+    Import-DscResource -ModuleName GPRegistryPolicyDsc
 
+    # lab passwords - dont change these or it breaks
+    $AdminCred = New-Object System.Management.Automation.PSCredential(
+        'Administrator',
+        (ConvertTo-SecureString 'superw1n_user' -AsPlainText -Force)
+    )
+    $UserPass = ConvertTo-SecureString 'notlob2k26' -AsPlainText -Force
 
-    Node $AllNodes.NodeName {
+    Node 'localhost' {
 
-        # Ensure C:\TEST exists
-        File TestFolder {
-            DestinationPath = 'C:\TEST'
-            Type            = 'Directory'
-            Ensure          = 'Present'
+        # putting AD DS on so the server can act as a domain controller
+        WindowsFeature ADDomainServices {
+            Name   = 'AD-Domain-Services'
+            Ensure = 'Present'
         }
 
-        # Ensure C:\TEST\test.txt exists with content
-        File TestFile {
-            DestinationPath = 'C:\TEST\test.txt'
-            Type            = 'File'
-            Ensure          = 'Present'
-            Contents        = 'Proof-of-life: DSC created this file.'
-            DependsOn       = '[File]TestFolder'
+        WindowsFeature DNSServer {
+            Name      = 'DNS'
+            Ensure    = 'Present'
+            DependsOn = '[WindowsFeature]ADDomainServices'
         }
 
-         # Disable Guest Account
-        User DisableGuest {
-            UserName = "Guest"
-            Ensure   = "Present"
-            Disabled = $true
+        # rsat so i can run things like Get-ADUser from the terminal
+        WindowsFeature RSATADTools {
+            Name      = 'RSAT-AD-Tools'
+            Ensure    = 'Present'
+            DependsOn = '[WindowsFeature]ADDomainServices'
         }
 
-        # Remove Telnet Client
-        WindowsFeature TelnetDisabled {
-            Name   = "Telnet-Client"
-            Ensure = "Absent"
+        WindowsFeature GPMCFeature {
+            Name      = 'GPMC'
+            Ensure    = 'Present'
+            DependsOn = '[WindowsFeature]ADDomainServices'
         }
 
-        # Ensure Windows Defender exists
-        WindowsFeature Defender {
-            Name   = "Windows-Defender"
-            Ensure = "Present"
-       }
+        # sets up barmbuzz.corp as the domain and makes this server the DC
+        ADDomain BarmBuzzCorp {
+            DomainName                    = 'barmbuzz.corp'
+            DomainNetBiosName             = 'BARMBUZZ'
+            Credential                    = $AdminCred
+            SafemodeAdministratorPassword = $AdminCred
+            DependsOn                     = '[WindowsFeature]ADDomainServices'
+        }
+
+        # this waits for AD to fully load before doing anything else
+        # without it the OU creation was just failing straight away
+        WaitForADDomain WaitForDomain {
+            DomainName = 'barmbuzz.corp'
+            DependsOn  = '[ADDomain]BarmBuzzCorp'
+        }
+
+        # OUs
+
+        ADOrganizationalUnit OU_Bolton {
+            Name      = 'Bolton'
+            Path      = 'DC=barmbuzz,DC=corp'
+            Ensure    = 'Present'
+            ProtectedFromAccidentalDeletion = $true
+            DependsOn = '[WaitForADDomain]WaitForDomain'
+        }
+
+        ADOrganizationalUnit OU_Derby {
+            Name      = 'Derby'
+            Path      = 'DC=barmbuzz,DC=corp'
+            Ensure    = 'Present'
+            ProtectedFromAccidentalDeletion = $true
+            DependsOn = '[WaitForADDomain]WaitForDomain'
+        }
+
+        # nottingham sits inside derby not at domain level
+        ADOrganizationalUnit OU_Nottingham {
+            Name      = 'Nottingham'
+            Path      = 'OU=Derby,DC=barmbuzz,DC=corp'
+            Ensure    = 'Present'
+            ProtectedFromAccidentalDeletion = $true
+            DependsOn = '[ADOrganizationalUnit]OU_Derby'
+        }
+
+        # groups
+
+        ADGroup BoltonUsers {
+            GroupName   = 'Bolton-Users'
+            GroupScope  = 'Global'
+            Category    = 'Security'
+            Path        = 'OU=Bolton,DC=barmbuzz,DC=corp'
+            Ensure      = 'Present'
+            Description = 'bolton workers'
+            DependsOn   = '[ADOrganizationalUnit]OU_Bolton'
+        }
+
+        ADGroup DerbyUsers {
+            GroupName   = 'Derby-Users'
+            GroupScope  = 'Global'
+            Category    = 'Security'
+            Path        = 'OU=Derby,DC=barmbuzz,DC=corp'
+            Ensure      = 'Present'
+            Description = 'derby and nottingham workers'
+            DependsOn   = '[ADOrganizationalUnit]OU_Derby'
+        }
+
+        # users
+
+        ADUser asia_muhammed {
+            UserName             = 'Asia.Muhammed'
+            GivenName            = 'Asia'
+            Surname              = 'Muhammed'
+            DisplayName          = 'Asia Muhammed'
+            UserPrincipalName    = 'Asia.Muhammed@barmbuzz.corp'
+            Path                 = 'OU=Bolton,DC=barmbuzz,DC=corp'
+            Password             = (New-Object System.Management.Automation.PSCredential('dummy', $UserPass))
+            Ensure               = 'Present'
+            PasswordNeverExpires = $true
+            Enabled              = $true
+            DependsOn            = '[ADOrganizationalUnit]OU_Bolton'
+        }
+
+        ADUser aria_hussian {
+            UserName             = 'Aria.Hussian'
+            GivenName            = 'Aria'
+            Surname              = 'Hussian'
+            DisplayName          = 'Aria Hussian'
+            UserPrincipalName    = 'Aria.Hussian@barmbuzz.corp'
+            Path                 = 'OU=Derby,DC=barmbuzz,DC=corp'
+            Password             = (New-Object System.Management.Automation.PSCredential('dummy', $UserPass))
+            Ensure               = 'Present'
+            PasswordNeverExpires = $true
+            Enabled              = $true
+            DependsOn            = '[ADOrganizationalUnit]OU_Derby'
+        }
+
+        ADUser amira_perez {
+            UserName             = 'Amira.Perez'
+            GivenName            = 'Amira'
+            Surname              = 'Perez'
+            DisplayName          = 'Amira Perez'
+            UserPrincipalName    = 'Amira.Perez@barmbuzz.corp'
+            Path                 = 'OU=Nottingham,OU=Derby,DC=barmbuzz,DC=corp'
+            Password             = (New-Object System.Management.Automation.PSCredential('dummy', $UserPass))
+            Ensure               = 'Present'
+            PasswordNeverExpires = $true
+            Enabled              = $true
+            DependsOn            = '[ADOrganizationalUnit]OU_Nottingham'
+        }
+
+        # group membership - users go into groups not given access directly
+
+        ADGroup BoltonUsers_members {
+            GroupName        = 'Bolton-Users'
+            GroupScope       = 'Global'
+            Category         = 'Security'
+            Path             = 'OU=Bolton,DC=barmbuzz,DC=corp'
+            Ensure           = 'Present'
+            MembersToInclude = @('Asia.Muhammed')
+            DependsOn        = @('[ADUser]asia_muhammed', '[ADGroup]BoltonUsers')
+        }
+
+        ADGroup DerbyUsers_members {
+            GroupName        = 'Derby-Users'
+            GroupScope       = 'Global'
+            Category         = 'Security'
+            Path             = 'OU=Derby,DC=barmbuzz,DC=corp'
+            Ensure           = 'Present'
+            MembersToInclude = @('Aria.Hussian', 'Amira.Perez')
+            DependsOn        = @('[ADUser]aria_hussian', '[ADUser]amira_perez', '[ADGroup]DerbyUsers')
+        }
 
     }
+}
+
+
+# this runs after the dsc build to create the gpo and save all the evidence
+function Run-PostBuild {
+    param(
+        [string]$EvidenceRoot = ".\Evidence"
+    )
+
+    New-Item -ItemType Directory -Path "$EvidenceRoot\GPO" -Force | Out-Null
+    New-Item -ItemType Directory -Path "$EvidenceRoot\Health" -Force | Out-Null
+    New-Item -ItemType Directory -Path "$EvidenceRoot\Validation" -Force | Out-Null
+
+    $gponame = 'BarmBuzz-Lockdown'
+
+    if (-not (Get-GPO -Name $gponame -ErrorAction SilentlyContinue)) {
+        New-GPO -Name $gponame -Comment 'locks screen after 10 mins, stops people getting into unattended machines' | Out-Null
+        Write-Host "gpo created" -ForegroundColor Green
+    } else {
+        Write-Host "gpo already exists, skipping" -ForegroundColor Gray
+    }
+
+    # these 3 registry values are what actually makes the screen lock kick in
+    Set-GPRegistryValue -Name $gponame `
+        -Key 'HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop' `
+        -ValueName 'ScreenSaveTimeOut' -Type String -Value '600'
+
+    Set-GPRegistryValue -Name $gponame `
+        -Key 'HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop' `
+        -ValueName 'ScreenSaveActive' -Type String -Value '1'
+
+    Set-GPRegistryValue -Name $gponame `
+        -Key 'HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop' `
+        -ValueName 'ScreenSaverIsSecure' -Type String -Value '1'
+
+    # linking to bolton OU only, brief says not to link at domain level
+    try {
+        New-GPLink -Name $gponame -Target 'OU=Bolton,DC=barmbuzz,DC=corp' -LinkEnabled Yes -ErrorAction Stop
+        Write-Host "gpo linked to bolton" -ForegroundColor Green
+    } catch {
+        if ($_.Exception.Message -like '*already*') {
+            Write-Host "already linked" -ForegroundColor Gray
+        } else {
+            Write-Warning $_.Exception.Message
+        }
+    }
+
+    # saving evidence
+    dcdiag /q | Out-File "$EvidenceRoot\Health\dcdiag.txt" -Encoding UTF8
+    Get-Service -Name 'ADWS','DNS','Netlogon','KDC' | Select-Object Name,Status | Out-File "$EvidenceRoot\Health\services.txt" -Encoding UTF8
+    Resolve-DnsName barmbuzz.corp -ErrorAction SilentlyContinue | Out-File "$EvidenceRoot\Health\dns_lookup.txt" -Encoding UTF8
+    Get-ADDomain | Select-Object DNSRoot,DomainMode,Forest | Out-File "$EvidenceRoot\Health\addomain.txt" -Encoding UTF8
+    Get-ADDomainController -Filter * | Select-Object HostName,Domain,IsGlobalCatalog | Out-File "$EvidenceRoot\Health\addc.txt" -Encoding UTF8
+    Get-ADOrganizationalUnit -Filter * | Select-Object Name,DistinguishedName | Out-File "$EvidenceRoot\Health\ous.txt" -Encoding UTF8
+    Get-ADUser -Filter * | Select-Object Name,UserPrincipalName,Enabled | Out-File "$EvidenceRoot\Health\users.txt" -Encoding UTF8
+    Get-ADGroup -Filter * | Select-Object Name,GroupScope,GroupCategory | Out-File "$EvidenceRoot\Health\groups.txt" -Encoding UTF8
+    Get-ADGroupMember 'Bolton-Users' | Select-Object Name,ObjectClass | Out-File "$EvidenceRoot\Health\bolton_members.txt" -Encoding UTF8
+    Get-ADGroupMember 'Derby-Users' | Select-Object Name,ObjectClass | Out-File "$EvidenceRoot\Health\derby_members.txt" -Encoding UTF8
+    Get-GPO -All | Select-Object DisplayName,GpoStatus,CreationTime | Out-File "$EvidenceRoot\GPO\gpo_list.txt" -Encoding UTF8
+    Get-GPInheritance -Target 'OU=Bolton,DC=barmbuzz,DC=corp' | Out-File "$EvidenceRoot\GPO\bolton_gpo_inheritance.txt" -Encoding UTF8
+    gpresult /r | Out-File "$EvidenceRoot\GPO\gpresult.txt" -Encoding UTF8
+
+    Write-Host "done" -ForegroundColor Green
 }
