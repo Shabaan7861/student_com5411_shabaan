@@ -11,8 +11,8 @@ Configuration StudentBaseline {
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    Import-DscResource -ModuleName ActiveDirectoryDsc
-    Import-DscResource -ModuleName GPRegistryPolicyDsc
+    Import-DscResource -ModuleName ActiveDirectoryDsc -ModuleVersion '6.6.0'
+    Import-DscResource -ModuleName GPRegistryPolicyDsc -ModuleVersion '1.3.1'
 
     # lab passwords - dont change these or it breaks
     $AdminCred = New-Object System.Management.Automation.PSCredential(
@@ -130,7 +130,7 @@ Configuration StudentBaseline {
             DisplayName          = 'Asia Muhammed'
             UserPrincipalName    = 'Asia.Muhammed@barmbuzz.corp'
             Path                 = 'OU=Bolton,DC=barmbuzz,DC=corp'
-            DomainName           = 'barmbuzz.corp'
+            DomainName           = $DomainName
             Password             = (New-Object System.Management.Automation.PSCredential('dummy', $UserPass))
             Ensure               = 'Present'
             PasswordNeverExpires = $true
@@ -145,7 +145,7 @@ Configuration StudentBaseline {
             DisplayName          = 'Aria Hussian'
             UserPrincipalName    = 'Aria.Hussian@barmbuzz.corp'
             Path                 = 'OU=Derby,DC=barmbuzz,DC=corp'
-            DomainName           = 'barmbuzz.corp'
+            DomainName           = $DomainName
             Password             = (New-Object System.Management.Automation.PSCredential('dummy', $UserPass))
             Ensure               = 'Present'
             PasswordNeverExpires = $true
@@ -160,7 +160,7 @@ Configuration StudentBaseline {
             DisplayName          = 'Amira Perez'
             UserPrincipalName    = 'Amira.Perez@barmbuzz.corp'
             Path                 = 'OU=Nottingham,OU=Derby,DC=barmbuzz,DC=corp'
-            DomainName           = 'barmbuzz.corp'
+            DomainName           = $DomainName
             Password             = (New-Object System.Management.Automation.PSCredential('dummy', $UserPass))
             Ensure               = 'Present'
             PasswordNeverExpires = $true
