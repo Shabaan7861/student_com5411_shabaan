@@ -17,11 +17,17 @@ Configuration StudentBaseline {
     # lab passwords - dont change these or it breaks
     $AdminCred = New-Object System.Management.Automation.PSCredential(
         'Administrator',
-        (ConvertTo-SecureString 'superw1n_user' -AsPlainText -Force)
+        (ConvertTo-SecureString ($ConfigurationData.AllNodes | Where-Object NodeName -eq 'localhost' | Select-Object -ExpandProperty SafeModePassword) -AsPlainText -Force)
     )
     $UserPass = ConvertTo-SecureString 'notlob2k26' -AsPlainText -Force
 
-    Node 'localhost' {
+    $LocalNode = $ConfigurationData.AllNodes | Where-Object NodeName -eq 'localhost' | Select-Object -First 1
+    if (-not $LocalNode) { throw 'ConfigurationData must include NodeName = "localhost".' }
+
+    $DomainName  = $LocalNode.DomainName
+    $DomainNetBios = $LocalNode.DomainNetbios
+
+    Node $LocalNode.NodeName {
 
         # putting AD DS on so the server can act as a domain controller
         WindowsFeature ADDomainServices {
@@ -50,8 +56,8 @@ Configuration StudentBaseline {
 
         # sets up barmbuzz.corp as the domain and makes this server the DC
         ADDomain BarmBuzzCorp {
-            DomainName                    = 'barmbuzz.corp'
-            DomainNetBiosName             = 'BARMBUZZ'
+            DomainName                    = $DomainName
+            DomainNetBiosName             = $DomainNetBios
             Credential                    = $AdminCred
             SafemodeAdministratorPassword = $AdminCred
             DependsOn                     = '[WindowsFeature]ADDomainServices'
@@ -60,7 +66,7 @@ Configuration StudentBaseline {
         # this waits for AD to fully load before doing anything else
         # without it the OU creation was just failing straight away
         WaitForADDomain WaitForDomain {
-            DomainName = 'barmbuzz.corp'
+            DomainName = $DomainName
             DependsOn  = '[ADDomain]BarmBuzzCorp'
         }
 
@@ -94,23 +100,25 @@ Configuration StudentBaseline {
         # groups
 
         ADGroup BoltonUsers {
-            GroupName   = 'Bolton-Users'
-            GroupScope  = 'Global'
-            Category    = 'Security'
-            Path        = 'OU=Bolton,DC=barmbuzz,DC=corp'
-            Ensure      = 'Present'
-            Description = 'bolton workers'
-            DependsOn   = '[ADOrganizationalUnit]OU_Bolton'
+            GroupName        = 'Bolton-Users'
+            GroupScope       = 'Global'
+            Category         = 'Security'
+            Path             = 'OU=Bolton,DC=barmbuzz,DC=corp'
+            Ensure           = 'Present'
+            Description      = 'bolton workers'
+            MembersToInclude = @('Asia.Muhammed')
+            DependsOn        = '[ADOrganizationalUnit]OU_Bolton'
         }
 
         ADGroup DerbyUsers {
-            GroupName   = 'Derby-Users'
-            GroupScope  = 'Global'
-            Category    = 'Security'
-            Path        = 'OU=Derby,DC=barmbuzz,DC=corp'
-            Ensure      = 'Present'
-            Description = 'derby and nottingham workers'
-            DependsOn   = '[ADOrganizationalUnit]OU_Derby'
+            GroupName        = 'Derby-Users'
+            GroupScope       = 'Global'
+            Category         = 'Security'
+            Path             = 'OU=Derby,DC=barmbuzz,DC=corp'
+            Ensure           = 'Present'
+            Description      = 'derby and nottingham workers'
+            MembersToInclude = @('Aria.Hussian', 'Amira.Perez')
+            DependsOn        = '[ADOrganizationalUnit]OU_Derby'
         }
 
         # users
@@ -155,28 +163,6 @@ Configuration StudentBaseline {
             PasswordNeverExpires = $true
             Enabled              = $true
             DependsOn            = '[ADOrganizationalUnit]OU_Nottingham'
-        }
-
-        # group membership - users go into groups not given access directly
-
-        ADGroup BoltonUsers_members {
-            GroupName        = 'Bolton-Users'
-            GroupScope       = 'Global'
-            Category         = 'Security'
-            Path             = 'OU=Bolton,DC=barmbuzz,DC=corp'
-            Ensure           = 'Present'
-            MembersToInclude = @('Asia.Muhammed')
-            DependsOn        = @('[ADUser]asia_muhammed', '[ADGroup]BoltonUsers')
-        }
-
-        ADGroup DerbyUsers_members {
-            GroupName        = 'Derby-Users'
-            GroupScope       = 'Global'
-            Category         = 'Security'
-            Path             = 'OU=Derby,DC=barmbuzz,DC=corp'
-            Ensure           = 'Present'
-            MembersToInclude = @('Aria.Hussian', 'Amira.Perez')
-            DependsOn        = @('[ADUser]aria_hussian', '[ADUser]amira_perez', '[ADGroup]DerbyUsers')
         }
 
     }

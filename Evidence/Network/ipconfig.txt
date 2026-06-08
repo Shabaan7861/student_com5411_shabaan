@@ -15,17 +15,22 @@ Ethernet adapter Ethernet:
    Physical Address. . . . . . . . . : 08-00-27-20-5D-6B
    DHCP Enabled. . . . . . . . . . . : Yes
    Autoconfiguration Enabled . . . . : Yes
+   IPv6 Address. . . . . . . . . . . : fd17:625c:f037:2:658:762b:24a3:7b89(Preferred) 
+   Temporary IPv6 Address. . . . . . : fd17:625c:f037:2:1532:be3c:8231:b2bc(Preferred) 
    Link-local IPv6 Address . . . . . : fe80::547f:149f:142d:9d65%4(Preferred) 
    IPv4 Address. . . . . . . . . . . : 10.0.2.15(Preferred) 
    Subnet Mask . . . . . . . . . . . : 255.255.255.0
-   Lease Obtained. . . . . . . . . . : Friday, March 6, 2026 3:02:33 PM
-   Lease Expires . . . . . . . . . . : Saturday, March 7, 2026 3:02:35 PM
-   Default Gateway . . . . . . . . . : 10.0.2.2
+   Lease Obtained. . . . . . . . . . : Monday, June 8, 2026 11:41:41 AM
+   Lease Expires . . . . . . . . . . : Tuesday, June 9, 2026 11:41:38 AM
+   Default Gateway . . . . . . . . . : fe80::2%4
+                                       10.0.2.2
    DHCP Server . . . . . . . . . . . : 10.0.2.2
    DHCPv6 IAID . . . . . . . . . . . : 84410407
    DHCPv6 Client DUID. . . . . . . . : 00-01-00-01-31-15-97-95-08-00-27-20-5D-6B
    DNS Servers . . . . . . . . . . . : 10.0.2.3
    NetBIOS over Tcpip. . . . . . . . : Enabled
+   Connection-specific DNS Suffix Search List :
+                                       c217.local
 
 Ethernet adapter Ethernet 2:
 
@@ -35,7 +40,9 @@ Ethernet adapter Ethernet 2:
    DHCP Enabled. . . . . . . . . . . : No
    Autoconfiguration Enabled . . . . : Yes
    Link-local IPv6 Address . . . . . : fe80::b876:1ff2:726f:9690%5(Preferred) 
-   IPv4 Address. . . . . . . . . . . : 192.168.1.10(Preferred) 
+   Autoconfiguration IPv4 Address. . : 169.254.88.196(Preferred) 
+   Subnet Mask . . . . . . . . . . . : 255.255.0.0
+   IPv4 Address. . . . . . . . . . . : 192.168.1.10(Duplicate) 
    Subnet Mask . . . . . . . . . . . : 255.255.255.0
    Default Gateway . . . . . . . . . : 192.168.1.1
    DHCPv6 IAID . . . . . . . . . . . : 168296487
