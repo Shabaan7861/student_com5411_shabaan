@@ -31,13 +31,14 @@ why one domain
 Derby and Nottingham are OUs, not separate domains. That keeps the lab much simpler and avoids extra domain controllers and trust relationships. It still lets me apply different policies to different OUs.
 
 references
-Microsoft, 2024. Active Directory Domain Services. Available at: https://learn.microsoft.com/en-us/windows-server/identity/ad-ds [Accessed 8 June 2026].
-Microsoft, 2024. PowerShell Desired State Configuration. Available at: https://learn.microsoft.com/en-us/powershell/scripting/dsc/overview [Accessed 8 June 2026].
-Microsoft, 2024. Group Policy cmdlets. Available at: https://learn.microsoft.com/en-us/powershell/module/grouppolicy [Accessed 8 June 2026].
-Microsoft, 2024. Windows Server 2025 evaluation and deployment. Available at: https://learn.microsoft.com/en-us/windows-server/ [Accessed 8 June 2026].
+
+Microsoft, 2024. Desired State Configuration (DSC) overview. Available at: https://learn.microsoft.com/en-us/powershell/scripting/dsc/overview [Accessed 8 June 2026].
+Microsoft, 2024. Group Policy PowerShell cmdlets. Available at: https://learn.microsoft.com/en-us/powershell/module/grouppolicy/ [Accessed 8 June 2026].
+Microsoft, 2024. Windows Server 2025 overview. Available at: https://learn.microsoft.com/en-us/windows-server/ [Accessed 8 June 2026].
+TechTarget, 2023. What is Active Directory? Available at: https://www.techtarget.com/searchwindowsserver/definition/Active-Directory [Accessed 8 June 2026].
+Petri.com, 2022. How to install Active Directory Domain Services on Windows Server. Available at: https://petri.com/install-active-directory-domain-services-windows-server/ [Accessed 8 June 2026].
+PowerShell.org, 2024. DSC tag articles. Available at: https://powershell.org/tag/dsc/ [Accessed 8 June 2026].
+Redgate, 2019. Using PowerShell and Group Policy. Available at: https://www.red-gate.com/simple-talk/sysadmin/powershell/using-powershell-and-group-policy/ [Accessed 8 June 2026].
+YouTube, 2022. NetworkChuck, Active Directory in 10 minutes. Available at: https://www.youtube.com/watch?v=J7cEzIpg24Q [Accessed 8 June 2026].
 Pester Team, 2024. Pester documentation. Available at: https://pester.dev [Accessed 8 June 2026].
-Jones, D. and Hicks, J., 2020. Learn Windows PowerShell in a Month of Lunches. 4th ed. Manning Publications.
-Moskowitz, J., 2015. Group Policy: Fundamentals, Security, and the Managed Desktop. 3rd ed. Sybex.
-Smith, A., 2023. Mastering Windows Server Administration. Packt Publishing.
-Lee, T., 2019. Active Directory Administration Cookbook. Packt Publishing.
-'
+
