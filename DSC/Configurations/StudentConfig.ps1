@@ -130,6 +130,7 @@ Configuration StudentBaseline {
             DisplayName          = 'Asia Muhammed'
             UserPrincipalName    = 'Asia.Muhammed@barmbuzz.corp'
             Path                 = 'OU=Bolton,DC=barmbuzz,DC=corp'
+            DomainName           = 'barmbuzz.corp'
             Password             = (New-Object System.Management.Automation.PSCredential('dummy', $UserPass))
             Ensure               = 'Present'
             PasswordNeverExpires = $true
@@ -144,6 +145,7 @@ Configuration StudentBaseline {
             DisplayName          = 'Aria Hussian'
             UserPrincipalName    = 'Aria.Hussian@barmbuzz.corp'
             Path                 = 'OU=Derby,DC=barmbuzz,DC=corp'
+            DomainName           = 'barmbuzz.corp'
             Password             = (New-Object System.Management.Automation.PSCredential('dummy', $UserPass))
             Ensure               = 'Present'
             PasswordNeverExpires = $true
@@ -158,6 +160,7 @@ Configuration StudentBaseline {
             DisplayName          = 'Amira Perez'
             UserPrincipalName    = 'Amira.Perez@barmbuzz.corp'
             Path                 = 'OU=Nottingham,OU=Derby,DC=barmbuzz,DC=corp'
+            DomainName           = 'barmbuzz.corp'
             Password             = (New-Object System.Management.Automation.PSCredential('dummy', $UserPass))
             Ensure               = 'Present'
             PasswordNeverExpires = $true
